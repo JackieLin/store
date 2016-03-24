@@ -1,0 +1,3 @@
+[submodule "vendor/store"]
+	path = vendor/store
+	url = https://github.com/marcuswestin/store.js

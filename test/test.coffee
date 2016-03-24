@@ -5,7 +5,12 @@
 
 'use strict'
 
+require 'should'
 store = require '../dist/store'
 
-describe '测试 destroy 方法', ->
-
+describe '测试 store', ->
+    ###
+     * 测试删除方法
+    ###
+    it '删除方法测试', ->
+        Object.keys(store.destroy()).length.should.equal 0

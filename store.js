@@ -7,8 +7,8 @@
 
     var win = (typeof window != 'undefined' ? window : global);
     var localStorageName = 'localStorage';
-    var store = require('store.js');
-
+    var store = require('./vendor/store/src/store');
+    
     /**
      * {
      *  'key': {
@@ -56,6 +56,8 @@
                 }
             });   
         }
+
+        return store.getAll();
     };
 
     /**

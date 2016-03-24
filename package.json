@@ -15,7 +15,6 @@
     "should": "^8.3.0",
     "coffee-script": "~1.10.0",
     "coffee-loader": "^0.7.2",
-    "store.js": "~1.0.4",
     "md5": "~2.1.0"
   },
 
