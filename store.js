@@ -4,11 +4,14 @@
  */
 (function(window, undefined) {
     "use strict";
-
+    
     var win = (typeof window != 'undefined' ? window : global);
     var localStorageName = 'localStorage';
     var store = require('./vendor/store/src/store');
-    
+    var md5 = require('md5');
+    var Request = require('./request');
+    var request = new Request();
+
     /**
      * {
      *  'key': {
@@ -26,15 +29,15 @@
         try { return (localStorageName in win && win[localStorageName]) }
         catch(err) { return false }
     }
-        
+    
     /**
      * 获取所有配置信息
      */
-    var updateAll = function(callback) {
+    var updateAll = function() {
         var keys = Object.keys(config);
         // 遍历
         keys.forEach(function(v) {
-            callback.apply(null, [v]);
+            update.apply(null, [v]);
         });
     };
     
@@ -59,7 +62,7 @@
 
         return store.getAll();
     };
-
+    
     /**
      * 线上 md5 与线下比较
      */
@@ -68,12 +71,13 @@
         // localStoarge 不存在
         if(!value) {
             // 线上获取信息
-            request(key, function() {
+            requestUrl(key, function() {
                 // 回调
+                console.log(this.innerHTML);
             });
         } else if(!compareMd5(value, config[key].sign)){
             // 线上获取信息
-            request(key, function() {
+            requestUrl(key, function() {
 
             });
         }
@@ -84,17 +88,14 @@
      * @param {String} key
      * @param {callback} 加载完回调
      */
-    var request = function(key, callback) {
+    var requestUrl = function(key, callback) {
         if(!key) {
             return false;
         }
         
-        var path = config[key].path;
-        var script = document.createElement('script');
-        script.async = true;
-        script.src = path;
-        script.onload = callback;
-        document.head.appendChild(script);
+        request.get(config[key].path, function(content) {
+            console.log(content);
+        });
     };
 
     /**

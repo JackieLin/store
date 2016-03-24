@@ -5,8 +5,8 @@
 'use strict';
 
 module.exports = {
-    key: {
-        sign: 'md5',
-        path: 'path'
+    jquery: {
+        sign: '',
+        path: '//cdn.bootcss.com/jquery/3.0.0-beta1/jquery.min.js'
     }
 };

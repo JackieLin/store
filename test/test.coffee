@@ -12,5 +12,8 @@ describe '测试 store', ->
     ###
      * 测试删除方法
     ###
-    it '删除方法测试', ->
+    it '#destory()', ->
         Object.keys(store.destroy()).length.should.equal 0
+
+    it '#updateall()', ->
+        store.updateAll()
