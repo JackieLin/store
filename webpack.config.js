@@ -5,31 +5,41 @@
 'use strict';
 var path = require('path');
 
+var argv = process.argv;
+var isPack = false;
+
+// 正式环境
+if(argv.indexOf('-p') !== -1 || argv.indexOf('--pack') !== -1) {
+    isPack = true;
+}
+
 module.exports = {
     // 上下文
     context: __dirname,
     entry: {
-        'store': './store'
-    },
-    // module: {
-    //     loaders: [{
-    //         test: /\.jsx?$/,
-    //         exclude: /node_modules/,
-    //         loader: 'babel',
-    //         query: {
-    //             presets: ['react', 'es2015']
-    //         }
-    //     }]
-    // },
-
-    resolve: {
-        extensions: ['', '.js', '.json']
+        'store': './src/store'
     },
 
     output: {
         libraryTarget: 'umd',
         path: __dirname + "/dist",
-        filename: "[name].js"
+        filename: isPack ? "[name].min.js" : "[name].js"
+    },
+
+    module: {
+        loaders: [{
+            test: /.*\/src\/.*\.js$/,
+            exclude: /node_modules/,
+            loader: 'uglify'
+        }]
+    },
+    
+    'uglify-loader': {
+        mangle: false
+    },
+
+    resolve: {
+        extensions: ['', '.js']
     }
     // externals: {
     //     'mocha': 'mocha'

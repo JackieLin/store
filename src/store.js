@@ -7,7 +7,7 @@
     
     var win = (typeof window != 'undefined' ? window : global);
     var localStorageName = 'localStorage';
-    var store = require('./vendor/store/src/store');
+    var store = require('../vendor/store/src/store');
     var md5 = require('md5');
     var Request = require('./request');
     var request = new Request();
@@ -71,9 +71,11 @@
         // localStoarge 不存在
         if(!value) {
             // 线上获取信息
-            requestUrl(key, function() {
-                // 回调
-                console.log(this.innerHTML);
+            requestUrl(key, function(content) {
+                // 存储到 ls 中
+                if(content) {
+                    store.set(key, content);                    
+                }
             });
         } else if(!compareMd5(value, config[key].sign)){
             // 线上获取信息
@@ -83,6 +85,18 @@
         }
     };
     
+    /**
+     * 执行 javascript
+     * @param  {String} content 内容
+     */
+    var execScript = function(content) {
+        if(!content) {
+            return false;
+        }
+        
+        return new Function(content)();
+    };
+
     /**
      * 加载资源
      * @param {String} key
@@ -94,7 +108,11 @@
         }
         
         request.get(config[key].path, function(content) {
-            console.log(content);
+            if(content) {
+                execScript(content);
+            }
+
+            callback(content);
         });
     };
 

@@ -5,8 +5,8 @@
 'use strict';
 
 module.exports = {
-    jquery: {
+    moment: {
         sign: '',
-        path: '//cdn.bootcss.com/jquery/3.0.0-beta1/jquery.min.js'
+        path: '//cdn.bootcss.com/moment.js/2.11.2/moment.min.js'
     }
 };
