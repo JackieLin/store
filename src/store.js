@@ -80,7 +80,10 @@
         } else if(!compareMd5(value, config[key].sign)){
             // 线上获取信息
             requestUrl(key, function() {
-
+                // 存储到 ls 中
+                if(content) {
+                    store.set(key, content);
+                }
             });
         }
     };
