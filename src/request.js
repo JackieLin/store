@@ -18,12 +18,12 @@ module.exports = (function(window){
         // 初始化
         if(window.XMLHttpRequest) {
             // Mozilla, Safari, IE7+ ...
-            this.httpRequest = new XMLHttpRequest();            
+            this.httpRequest = new XMLHttpRequest();
         } else if(window.ActiveXObject) {
             // IE 6 and older
             this.httpRequest = new ActiveXObject("Microsoft.XMLHTTP");
         }
-
+        
         this.httpRequest.onreadystatechange = (function(context) {
             return function() {
                 if(context.httpRequest.readyState === 4) {
@@ -36,8 +36,21 @@ module.exports = (function(window){
                 }        
             };
         })(this);
+
+        this.httpRequest.onerror = function() {
+            
+        };
     };
     
+    /**
+     * url 是否跨域
+     */
+    Request.prototype.crossDomain = function(url) {
+        if(!url) {
+            return false;
+        }
+    };
+
     Request.prototype.setRequestHeader = function() {
         if(!this.httpRequest) {
             return false;

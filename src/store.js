@@ -20,7 +20,7 @@
      *  }
      * }
      */
-    var config = require('./ls.config');
+    var config = window.config || require('./ls.config');
     
     // Functions to encapsulate questionable FireFox 3.6.13 behavior
     // when about.config::dom.storage.enabled === false
@@ -66,7 +66,7 @@
     /**
      * 线上 md5 与线下比较
      */
-    var update = function(key) {
+    var update = function(key) { 
         var value = store.get(key);
         // localStoarge 不存在
         if(!value) {
@@ -74,12 +74,12 @@
             requestUrl(key, function(content) {
                 // 存储到 ls 中
                 if(content) {
-                    store.set(key, content);                    
+                    store.set(key, content);
                 }
             });
         } else if(!compareMd5(value, config[key].sign)){
             // 线上获取信息
-            requestUrl(key, function() {
+            requestUrl(key, function(content) {
                 // 存储到 ls 中
                 if(content) {
                     store.set(key, content);
@@ -127,8 +127,21 @@
         if(!value || !md5Val) {
             return false;
         }
-
+        
+        console.log(md5(value));
+        
         return md5(value) === md5Val;
+    };
+    
+    /**
+     * 配置
+     */
+    exports.config = function(config) {
+        if(!config) {
+            return false;
+        }
+
+        config = config;
     };
 
     exports.updateAll = updateAll;
