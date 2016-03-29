@@ -97,7 +97,11 @@
             return false;
         }
         
-        return new Function(content)();
+        try{
+            new Function(content)();
+        } catch(e) {
+            console.log(e);
+        }
     };
 
     /**
@@ -127,9 +131,7 @@
         if(!value || !md5Val) {
             return false;
         }
-        
-        console.log(md5(value));
-        
+                
         return md5(value) === md5Val;
     };
     

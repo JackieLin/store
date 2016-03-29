@@ -14,6 +14,8 @@ module.exports = (function(window){
         this._url = '';
         // 重试次数
         this._retry = 3;
+        // 当前操作，get 还是 post
+        this._operate = null;
         
         // 初始化
         if(window.XMLHttpRequest) {
@@ -32,10 +34,7 @@ module.exports = (function(window){
      */
     Request.prototype.watch = function() {
         var self = this;
-        this.httpRequest.onerror = function() {
-            self.getScript(self._url);
-        };
-
+    
         this.httpRequest.onreadystatechange = (function(context) {
             return function() {
                 if(context.httpRequest.readyState === 4) {
@@ -44,8 +43,16 @@ module.exports = (function(window){
                         context._success.apply(context, [context.httpRequest.responseText]);
                     } else {
                         // retry
+                        if(context._retry > 0) {
+                            context._retry--;
+                            context._operate.apply(context, [context._url]);
+                        } else {
+                            context._retry = 3;
+                            // 采用 script 方式获取数据
+                            context.getScript(self._url);
+                        }
                     }
-                }        
+                }
             };
         })(this);
     };
@@ -55,40 +62,14 @@ module.exports = (function(window){
      */
     Request.prototype.getScript = function(url) {
         var script = document.createElement('script');
+        var self = this;
         script.src = url;
         document.head.appendChild(script);
-        this._success.apply(this, []);
+        script.onload = function() {
+            self._success.apply(self, []);
+        };
     };
 
-
-    /**
-     * url 是否跨域
-     * @see https://github.com/jquery/jquery/blob/93a8fa6bfc1c8a469e188630b61e736dfb69e128/src/ajax.js#L535
-     */
-    Request.prototype.isCrossDomain = function(url) {
-        crossDomain = null;
-
-        if(!url) {
-            return false;
-        }
-
-        var urlAnchor = document.createElement( "a" );
-
-        try {
-            urlAnchor.href = url;
-
-            // Support: IE8-11+
-            // Anchor's host property isn't correctly set when s.url is relative
-            urlAnchor.href = urlAnchor.href;
-        } catch ( e ) {
-
-            // If there is an error parsing the URL, assume it is crossDomain,
-            // it can be rejected by the transport if it is invalid
-            crossDomain = true;
-        }
-
-        return crossDomain;
-    };
 
     Request.prototype.setRequestHeader = function() {
         if(!this.httpRequest) {
@@ -108,6 +89,8 @@ module.exports = (function(window){
         }
         
         this._url = url;
+        this._operate = this.get;
+
         this.httpRequest.open('GET', url, true);
         this.httpRequest.send(null);
     };
