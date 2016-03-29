@@ -85,6 +85,9 @@
                     store.set(key, content);
                 }
             });
+        } else {
+            // 比较相同
+            execScript(value);
         }
     };
     
